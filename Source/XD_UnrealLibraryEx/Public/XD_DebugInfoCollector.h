@@ -30,6 +30,6 @@ class XD_UNREALLIBRARYEX_API UXD_DebugInfoConverter : public UObject
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "调试")
-		FString GetDebugName(const UObject* Object) const;
+	FString GetDebugName(const UObject* Object) const;
 	virtual FString GetDebugName_Implementation(const UObject* Object) const;
 };
