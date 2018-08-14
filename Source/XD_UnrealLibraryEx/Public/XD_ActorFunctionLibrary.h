@@ -23,5 +23,4 @@ public:
 	{
 		return (ComponentType*)AddComponent(Actor, ComponentType::StaticClass(), Name);
 	}
-
 };
