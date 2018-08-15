@@ -18,6 +18,14 @@
 			"Name": "XD_UnrealLibraryEx",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
+		},
+		{
+			"Name": "XD_UnrealLibraryEx_Editor",
+			"Type": "Editor",
+			"LoadingPhase": "PreLoadingScreen",
+			"AdditionalDependencies": [
+				"CoreUObject"
+			]
 		}
 	]
 }

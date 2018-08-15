@@ -8,7 +8,7 @@
  * 
  */
 
-struct XD_UNREALLIBRARYEX_API ARPG_Macros_Helper
+struct XD_UNREALLIBRARYEX_API XD_Macros_Helper
 {
 	//允许前向声明
 	template<typename T, unsigned long long Length>
@@ -57,7 +57,7 @@ private:
 };
 
 //获取类型名，允许前向声明
-#define GET_TYPE_NAME_STRING_CHECKED(Type) ARPG_Macros_Helper::GetTypeName<Type>(#Type)
+#define GET_TYPE_NAME_STRING_CHECKED(Type) XD_Macros_Helper::GetTypeName<Type>(#Type)
 
 //获取类型名，允许前向声明
 #define GET_TYPE_NAME_CHECKED(Type) FName(GET_TYPE_NAME_STRING_CHECKED(Type))
