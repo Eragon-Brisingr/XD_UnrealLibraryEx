@@ -61,3 +61,6 @@ private:
 
 //获取类型名，允许前向声明
 #define GET_TYPE_NAME_CHECKED(Type) FName(GET_TYPE_NAME_STRING_CHECKED(Type))
+
+//用来查看私有变量的偏移地址
+#define LookMemberOffset(type, member) (size_t)&(((type*)0)->member)
