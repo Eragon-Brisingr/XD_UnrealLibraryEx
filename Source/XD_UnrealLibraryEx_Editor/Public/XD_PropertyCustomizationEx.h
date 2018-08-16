@@ -56,6 +56,12 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 		}
 	}
 
+	template<typename ValueType>
+	static ValueType& Value(const TSharedPtr<IPropertyHandle>& PropertyHandle)
+	{
+		return *reinterpret_cast<ValueType*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(GetOuter(PropertyHandle.ToSharedRef()))));
+	}
+
 	static FPropertyAccess::Result SetValueFromFormattedString(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FString& InVale, EPropertyValueSetFlags::Type Flags = EPropertyValueSetFlags::DefaultFlags);
 
 	static void ForceSetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FText& Text);
