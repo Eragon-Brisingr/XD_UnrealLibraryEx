@@ -1,9 +1,11 @@
 ﻿// Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
 
 #include "XD_UnrealLibraryEx.h"
+#include "XD_UnrealLibrarySettings.h"
+#if WITH_EDITOR
 #include <ISettingsModule.h>
 #include <ISettingsSection.h>
-#include "XD_UnrealLibrarySettings.h"
+#endif
 
 #define LOCTEXT_NAMESPACE "FXD_UnrealLibraryExModule"
 
