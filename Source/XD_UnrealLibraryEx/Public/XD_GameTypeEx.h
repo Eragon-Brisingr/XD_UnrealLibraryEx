@@ -10,7 +10,7 @@
  * 
  */
 
-#define RF_XD_WasLoaded ((EObjectFlags)(RF_ClassDefaultObject | RF_ArchetypeObject | RF_DefaultSubObject | RF_LoadCompleted))
+#define RF_XD_WasLoaded ((EObjectFlags)(RF_ClassDefaultObject | RF_ArchetypeObject | RF_DefaultSubObject | RF_LoadCompleted | RF_WasLoaded))
 
 
 //Delegate Handle的蓝图包装  
