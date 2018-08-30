@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Config = "XD_UnrealLibrarySetting")
+UCLASS(Config = "XD_UnrealLibrarySetting", defaultconfig)
 class XD_UNREALLIBRARYEX_API UXD_UnrealLibrarySettings : public UObject
 {
 	GENERATED_BODY()
