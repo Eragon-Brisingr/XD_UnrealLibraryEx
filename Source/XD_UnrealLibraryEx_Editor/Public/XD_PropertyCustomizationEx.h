@@ -48,14 +48,15 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 	{
 		if (UObject* Outer = GetOuter(PropertyHandle.ToSharedRef()))
 		{
-			return *reinterpret_cast<ValueType*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(Outer)));
+			if (ValueType* Res = reinterpret_cast<ValueType*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(Outer))))
+			{
+				return *Res;
+			}
 		}
-		else
-		{
-			return {};
-		}
+		return {};
 	}
 
+	//别在用户输入时的处理中用这个设置值，会导致PropertyHandle的Notify之类的处理无效
 	template<typename ValueType>
 	static ValueType& Value(const TSharedPtr<IPropertyHandle>& PropertyHandle)
 	{

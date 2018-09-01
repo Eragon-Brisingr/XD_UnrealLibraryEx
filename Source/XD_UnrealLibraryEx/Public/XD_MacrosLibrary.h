@@ -18,24 +18,19 @@ struct XD_UNREALLIBRARYEX_API XD_Macros_Helper
 
 #define ClassForwardDeclaration "class "
 #define StructForwardDeclaration "struct "
-#define EnumForwardDeclaration "enum "
 
 #define ClassForwardDeclaration_Length sizeof(ClassForwardDeclaration) - 1
 #define StructForwardDeclaration_Length sizeof(StructForwardDeclaration) - 1
-#define EnumForwardDeclaration_Length sizeof(EnumForwardDeclaration) - 1
 
 		return Length > ClassForwardDeclaration_Length && StringCompare(ClassForwardDeclaration_Length, Type, ClassForwardDeclaration) ? GetTypeNameImpl(Type) + ClassForwardDeclaration_Length :
 			Length > StructForwardDeclaration_Length && StringCompare(StructForwardDeclaration_Length, Type, StructForwardDeclaration) ? GetTypeNameImpl(Type) + StructForwardDeclaration_Length :
-			Length > EnumForwardDeclaration_Length && StringCompare(EnumForwardDeclaration_Length, Type, EnumForwardDeclaration) ? GetTypeNameImpl(Type) + EnumForwardDeclaration_Length :
 			GetTypeNameImpl(Type);
 
 #undef ClassForwardDeclaration_Length
 #undef StructForwardDeclaration_Length
-#undef EnumForwardDeclaration_Length
 
 #undef ClassForwardDeclaration
 #undef StructForwardDeclaration
-#undef EnumForwardDeclaration
 	}
 
 private:
@@ -61,6 +56,12 @@ private:
 
 //获取类型名，允许前向声明
 #define GET_TYPE_NAME_CHECKED(Type) FName(GET_TYPE_NAME_STRING_CHECKED(Type))
+
+//获取c++中定义时的类型名，允许前向声明
+#define GET_TYPE_CPP_NAME_STRING_CHECKED(Type) (sizeof(Type), FString(TEXT(#Type)))
+
+//获取c++中定义时的类型名，允许前向声明
+#define GET_TYPE_CPP_NAME_CHECKED(Type) FName(GET_TYPE_CPP_NAME_STRING_CHECKED(Type))
 
 //用来查看私有变量的偏移地址
 #define LookMemberOffset(type, member) (size_t)&(((type*)0)->member)
