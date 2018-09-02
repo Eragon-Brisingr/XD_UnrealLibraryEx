@@ -67,12 +67,15 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 
 	static void ForceSetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FText& Text);
 
-	template<typename StructType>
-	static void SetStructValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const StructType& Value)
+	template<typename Type>
+	static void SetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const Type& Value)
 	{
-		FString ExportString;
-		StructType::StaticStruct()->ExportText(ExportString, &Value, nullptr, nullptr, 0, nullptr);
-		SetValueFromFormattedString(PropertyHandle, ExportString);
+		PropertyHandle->NotifyPreChange();
+		if (Type* Target = reinterpret_cast<Type*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(GetOuter(PropertyHandle.ToSharedRef())))))
+		{
+			*Target = Value;
+			PropertyHandle->NotifyPostChange(EPropertyValueSetFlags::DefaultFlags);
+		}
 	}
 
 	static void SetObjectValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, UObject* Object);
