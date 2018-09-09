@@ -65,9 +65,6 @@ public:
 	//动画
 public:
 	UFUNCTION(BlueprintPure, Category = "游戏|动画")
-	static float GetMontageLength(UAnimMontage* Montage);
-
-	UFUNCTION(BlueprintPure, Category = "游戏|动画")
 	static float GetBlendInTime(UAnimMontage* Montage);
 
 	UFUNCTION(BlueprintPure, Category = "游戏|动画")

@@ -8,6 +8,7 @@
 #include <AI/NavigationSystemBase.h>
 #include <NavigationSystem.h>
 #include <Kismet/GameplayStatics.h>
+#include <Animation/AnimMontage.h>
 
 FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddTicker(const FBPTickerDelegate& BPTickerDelegate, float InDelay /*= 0.f*/)
 {
@@ -48,11 +49,6 @@ bool UXD_BlueprintFunctionLibrary::TickerTick(float DeltaSeconds, FBPTickerDeleg
 FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddTickerWithReturn(const FBPTickerDelegateWithReturn& BPTickerDelegate, float InDelay /*= 0.f*/)
 {
 	return FBPDelegateHandle(FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&UXD_BlueprintFunctionLibrary::TickerTick, BPTickerDelegate)));
-}
-
-float UXD_BlueprintFunctionLibrary::GetMontageLength(UAnimMontage* Montage)
-{
-	return Montage ? Montage->GetPlayLength() : 0.f;
 }
 
 float UXD_BlueprintFunctionLibrary::GetBlendInTime(UAnimMontage* Montage)
