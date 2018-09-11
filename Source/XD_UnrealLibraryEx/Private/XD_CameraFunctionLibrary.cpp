@@ -1,9 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "XD_CameraFunctionLibrary.h"
+#if WITH_EDITOR
 #include <LevelEditorViewport.h>
 #include <Editor/EditorEngine.h>
 #include <Editor.h>
+#endif
 #include <Kismet/GameplayStatics.h>
 #include <Camera/PlayerCameraManager.h>
 
