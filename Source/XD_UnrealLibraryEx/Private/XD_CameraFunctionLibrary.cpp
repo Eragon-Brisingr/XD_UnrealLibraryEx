@@ -15,18 +15,22 @@
 FVector UXD_CameraFunctionLibrary::GetCameraLocation(const UObject* WorldContextObject)
 {
 #if WITH_EDITOR
-	if (!WorldContextObject->GetWorld()->IsGameWorld())
+	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
-		return client->GetViewLocation();
+		if (!World->IsGameWorld())
+		{
+			FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
+			return client->GetViewLocation();
+		}
 	}
 	else
-#endif
 	{
-		if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
-		{
-			return CameraManager->GetCameraLocation();
-		}
+		return FVector::ZeroVector;
+	}
+#endif
+	if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
+	{
+		return CameraManager->GetCameraLocation();
 	}
 	return FVector::ZeroVector;
 }
@@ -34,18 +38,22 @@ FVector UXD_CameraFunctionLibrary::GetCameraLocation(const UObject* WorldContext
 FRotator UXD_CameraFunctionLibrary::GetCameraRotation(const UObject* WorldContextObject)
 {
 #if WITH_EDITOR
-	if (!WorldContextObject->GetWorld()->IsGameWorld())
+	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
-		return client->GetViewRotation();
+		if (!WorldContextObject->GetWorld()->IsGameWorld())
+		{
+			FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
+			return client->GetViewRotation();
+		}
 	}
 	else
-#endif
 	{
-		if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
-		{
-			return CameraManager->GetCameraRotation();
-		}
+		return FRotator::ZeroRotator;
+	}
+#endif
+	if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
+	{
+		return CameraManager->GetCameraRotation();
 	}
 	return FRotator::ZeroRotator;
 }

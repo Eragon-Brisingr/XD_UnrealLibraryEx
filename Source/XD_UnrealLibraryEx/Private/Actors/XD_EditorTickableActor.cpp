@@ -39,11 +39,19 @@ AXD_OnlyEditorTickableActor::AXD_OnlyEditorTickableActor()
 
 void AXD_OnlyEditorTickableActor::Tick(float DeltaTime)
 {
-	if (GetWorld()->WorldType == EWorldType::Editor)
-	{
-		Super::Tick(DeltaTime);
-	}
+	Super::Tick(DeltaTime);
 }
+
+#if WITH_EDITOR
+bool AXD_OnlyEditorTickableActor::ShouldTickIfViewportsOnly() const
+{
+	if (UWorld* World = GetWorld())
+	{
+		return World->WorldType == EWorldType::Editor && !Pause;
+	}
+	return false;
+}
+#endif
 
 void AXD_OnlyEditorTickableActor::TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
 {
