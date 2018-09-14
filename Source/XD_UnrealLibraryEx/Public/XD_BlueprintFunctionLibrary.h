@@ -10,10 +10,6 @@
 /**
 * 这边的函数一般为暴露给蓝图用的包装函数，C++中不需要使用
 */
-DECLARE_DYNAMIC_DELEGATE_OneParam(FBPTickerDelegate, float, DeltaSeconds);
-
-DECLARE_DYNAMIC_DELEGATE_TwoParams(FBPTickerDelegateWithReturn, float, DeltaSeconds, bool&, IsContinueTick);
-
 UENUM(BlueprintType)
 enum class EEditorWorldType : uint8
 {
@@ -44,16 +40,21 @@ class XD_UNREALLIBRARYEX_API UXD_BlueprintFunctionLibrary : public UBlueprintFun
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintPure, Category = "游戏|工具")
+	static bool IsValid(const FBPDelegateHandle& Handle);
+
 	//Tick
 public:
+	DECLARE_DYNAMIC_DELEGATE_OneParam(FBPTickerDelegate, float, DeltaSeconds);
+
+	DECLARE_DYNAMIC_DELEGATE_TwoParams(FBPTickerDelegateWithReturn, float, DeltaSeconds, bool&, IsContinueTick);
+
 	UFUNCTION(BlueprintCallable, Category = "游戏|工具")
 	static FBPDelegateHandle AddTicker(const FBPTickerDelegate& BPTickerDelegate, float InDelay = 0.f);
 
 	UFUNCTION(BlueprintCallable, Category = "游戏|工具")
 	static void RemoveTicker(const FBPDelegateHandle& BPDelegateHandle);
-
-	UFUNCTION(BlueprintPure, Category = "游戏|工具")
-	static bool IsValidDelegateHandle(const FBPDelegateHandle& BPDelegateHandle);
 
 	static bool TickerTick(float DeltaSeconds, FBPTickerDelegate BPTickerDelegate);
 
@@ -61,6 +62,17 @@ public:
 	static FBPDelegateHandle AddTickerWithReturn(const FBPTickerDelegateWithReturn& BPTickerDelegate, float InDelay = 0.f);
 
 	static bool TickerTick(float DeltaSeconds, FBPTickerDelegateWithReturn BPTickerDelegate);
+
+	//
+public:
+	DECLARE_DYNAMIC_DELEGATE_OneParam(FBPActorSpawnedinWorldDelegate, class AActor*, Actor);
+
+	//Actor在游戏中生成就会调用
+	UFUNCTION(BlueprintCallable, Category = "游戏|工具", meta = (WorldContext = "WorldContextObject"))
+	static FBPDelegateHandle AddOnActorSpawnedInWorldEvent(const UObject* WorldContextObject, const FBPActorSpawnedinWorldDelegate& OnActorSpawnedEvent);
+
+	UFUNCTION(BlueprintCallable, Category = "游戏|工具", meta = (WorldContext = "WorldContextObject"))
+	static void RemoveOnActorSpawnedInWorldEvent(const UObject* WorldContextObject, const FBPDelegateHandle& DelegateHandle);
 
 	//动画
 public:

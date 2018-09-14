@@ -10,6 +10,11 @@
 #include <Kismet/GameplayStatics.h>
 #include <Animation/AnimMontage.h>
 
+bool UXD_BlueprintFunctionLibrary::IsValid(const FBPDelegateHandle& Handle)
+{
+	return Handle.DelegateHandle.IsValid();
+}
+
 FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddTicker(const FBPTickerDelegate& BPTickerDelegate, float InDelay /*= 0.f*/)
 {
 	return FBPDelegateHandle(FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&UXD_BlueprintFunctionLibrary::TickerTick, BPTickerDelegate)));
@@ -18,11 +23,6 @@ FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddTicker(const FBPTickerDelegat
 void UXD_BlueprintFunctionLibrary::RemoveTicker(const FBPDelegateHandle& BPDelegateHandle)
 {
 	FTicker::GetCoreTicker().RemoveTicker(BPDelegateHandle.DelegateHandle);
-}
-
-bool UXD_BlueprintFunctionLibrary::IsValidDelegateHandle(const FBPDelegateHandle& BPDelegateHandle)
-{
-	return BPDelegateHandle.DelegateHandle.IsValid();
 }
 
 bool UXD_BlueprintFunctionLibrary::TickerTick(float DeltaSeconds, FBPTickerDelegate BPTickerDelegate)
@@ -40,10 +40,23 @@ bool UXD_BlueprintFunctionLibrary::TickerTick(float DeltaSeconds, FBPTickerDeleg
 	if (BPTickerDelegate.IsBound())
 	{
 		bool IsContinueTick;
-		BPTickerDelegate.Execute(DeltaSeconds, IsContinueTick);
+		BPTickerDelegate.ExecuteIfBound(DeltaSeconds, IsContinueTick);
 		return IsContinueTick;
 	}
 	return false;
+}
+
+FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddOnActorSpawnedInWorldEvent(const UObject* WorldContextObject, const FBPActorSpawnedinWorldDelegate& OnActorSpawnedEvent)
+{
+	return FBPDelegateHandle(WorldContextObject->GetWorld()->AddOnActorSpawnedHandler(FOnActorSpawned::FDelegate::CreateLambda([=](AActor* Actor)
+	{
+		OnActorSpawnedEvent.ExecuteIfBound(Actor);
+	})));
+}
+
+void UXD_BlueprintFunctionLibrary::RemoveOnActorSpawnedInWorldEvent(const UObject* WorldContextObject, const FBPDelegateHandle& DelegateHandle)
+{
+	WorldContextObject->GetWorld()->RemoveOnActorSpawnedHandler(DelegateHandle.DelegateHandle);
 }
 
 FBPDelegateHandle UXD_BlueprintFunctionLibrary::AddTickerWithReturn(const FBPTickerDelegateWithReturn& BPTickerDelegate, float InDelay /*= 0.f*/)
