@@ -280,15 +280,19 @@ FVector UXD_BlueprintFunctionLibrary::GetCurrentTargetLocation(UPathFollowingCom
 
 AActor* UXD_BlueprintFunctionLibrary::SpawnActorFromClass(UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, const FTransform& Transform, AActor* Owner, APawn* Instigator, ESpawnActorCollisionHandlingMethod CollisionHandling /*= ESpawnActorCollisionHandlingMethod::Undefined*/)
 {
-	FActorSpawnParameters ActorSpawnParameters;
-	if (Owner)
+	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		ActorSpawnParameters.Owner = Owner;
-		ActorSpawnParameters.OverrideLevel = Owner->GetLevel();
+		FActorSpawnParameters ActorSpawnParameters;
+		if (Owner)
+		{
+			ActorSpawnParameters.Owner = Owner;
+			ActorSpawnParameters.OverrideLevel = Owner->GetLevel();
+		}
+		ActorSpawnParameters.Instigator = Instigator;
+		ActorSpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
+		return World->SpawnActor<AActor>(ActorClass, Transform, ActorSpawnParameters);
 	}
-	ActorSpawnParameters.Instigator = Instigator;
-	ActorSpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
-	return WorldContextObject->GetWorld()->SpawnActor<AActor>(ActorClass, Transform, ActorSpawnParameters);
+	return nullptr;
 }
 
 AActor* UXD_BlueprintFunctionLibrary::SpawnActorInLevel(UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, const FTransform& Transform, AActor* InLevelActor, APawn* Instigator)
