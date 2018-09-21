@@ -23,9 +23,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual bool ShouldTickIfViewportsOnly() const override { return true; }
+	virtual bool ShouldTickIfViewportsOnly() const override;
 	virtual void TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-	
+
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(EditAnywhere, Category = "环境系统", meta = (DisplayName = "暂停"))
+		uint8 Pause : 1;
+#endif
 };
 
 UCLASS(abstract)

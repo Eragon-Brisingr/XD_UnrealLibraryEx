@@ -25,6 +25,17 @@ void AXD_EditorTickableActor::Tick(float DeltaTime)
 
 }
 
+#if WITH_EDITOR
+bool AXD_EditorTickableActor::ShouldTickIfViewportsOnly() const
+{
+	if (UWorld* World = GetWorld())
+	{
+		return World->WorldType != EWorldType::EditorPreview && !Pause;
+	}
+	return false;
+}
+#endif
+
 void AXD_EditorTickableActor::TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
 {
 	FEditorScriptExecutionGuard ScriptGuard;

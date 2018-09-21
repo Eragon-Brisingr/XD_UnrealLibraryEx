@@ -226,6 +226,6 @@ public:
 	static bool IsPlayInPIE(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category = "游戏|工具", meta = (WorldContext = "WorldContextObject", CallableWithoutWorldContext = "true", DevelopmentOnly))
-	static EEditorWorldType GetEditorWorldType(UObject* WorldContextObject);
+	static EEditorWorldType GetWorldType(UObject* WorldContextObject);
 	
 };
