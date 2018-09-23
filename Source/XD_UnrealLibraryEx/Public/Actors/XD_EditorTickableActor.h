@@ -23,7 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+#if WITH_EDITOR
 	virtual bool ShouldTickIfViewportsOnly() const override;
+#endif
 	virtual void TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
 
 #if WITH_EDITORONLY_DATA
