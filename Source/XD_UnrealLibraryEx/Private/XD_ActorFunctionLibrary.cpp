@@ -13,3 +13,8 @@ UActorComponent* UXD_ActorFunctionLibrary::AddComponent(AActor* Actor, TSubclass
 	}
 	return nullptr;
 }
+
+bool UXD_ActorFunctionLibrary::IsInFrameSlice(int32 SliceCount /*= 3*/, int32 SliceIndex /*= 0*/)
+{
+	return GFrameCounter % SliceCount == SliceIndex;
+}

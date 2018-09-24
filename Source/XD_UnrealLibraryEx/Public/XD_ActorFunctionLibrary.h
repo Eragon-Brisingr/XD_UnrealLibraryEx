@@ -24,4 +24,15 @@ public:
 		return (ComponentType*)AddComponent(Actor, ComponentType::StaticClass(), Name);
 	}
 
+	
+
+public:
+	/**
+	* 分帧优化，根据当前总帧数决定执不执行事件
+	*
+	* @param SliceCount 决定分几帧执行一次
+	* @param SliceIndex 决定分分帧后第几帧执行
+	*/
+	UFUNCTION(BlueprintPure, Category = "游戏|时间系统")
+	static bool IsInFrameSlice(int32 SliceCount = 3, int32 SliceIndex = 0);
 };
