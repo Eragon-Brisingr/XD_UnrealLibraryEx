@@ -25,17 +25,26 @@ public:
 
 #if WITH_EDITOR
 	virtual bool ShouldTickIfViewportsOnly() const override;
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 	virtual void TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, Category = "环境系统", meta = (DisplayName = "暂停"))
-		uint8 Pause : 1;
+	UPROPERTY(EditAnywhere, Category = "控制", meta = (DisplayName = "刷新"))
+	uint8 Fresh : 1;
+
+	UPROPERTY(EditAnywhere, Category = "控制", meta = (DisplayName = "暂停"))
+	uint8 Pause : 1;
 #endif
+
+	UFUNCTION(BlueprintNativeEvent, Category = "控制")
+	void WhenFreshClicked();
+	void WhenFreshClicked_Implementation() {}
 };
 
 UCLASS(abstract)
-class XD_UNREALLIBRARYEX_API AXD_OnlyEditorTickableActor : public AActor
+class XD_UNREALLIBRARYEX_API AXD_OnlyEditorTickableActor : public AXD_EditorTickableActor
 {
 	GENERATED_BODY()
 
@@ -49,12 +58,6 @@ public:
 
 #if WITH_EDITOR
 	virtual bool ShouldTickIfViewportsOnly() const override;
-#endif
-	virtual void TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
-
-#if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, Category = "环境系统", meta = (DisplayName = "暂停"))
-	uint8 Pause : 1;
 #endif
 };
 

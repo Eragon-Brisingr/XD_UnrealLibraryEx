@@ -34,6 +34,20 @@ bool AXD_EditorTickableActor::ShouldTickIfViewportsOnly() const
 	}
 	return false;
 }
+
+void AXD_EditorTickableActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	FName PropertyName = (PropertyChangedEvent.Property != NULL) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(AXD_EditorTickableActor, Fresh))
+	{
+		Fresh = false;
+		FEditorScriptExecutionGuard ScriptGuard;
+		Tick(10000000.f);
+	}
+}
+
 #endif
 
 void AXD_EditorTickableActor::TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
@@ -63,9 +77,3 @@ bool AXD_OnlyEditorTickableActor::ShouldTickIfViewportsOnly() const
 	return false;
 }
 #endif
-
-void AXD_OnlyEditorTickableActor::TickActor(float DeltaSeconds, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
-{
-	FEditorScriptExecutionGuard ScriptGuard;
-	Super::TickActor(DeltaSeconds, TickType, ThisTickFunction);
-}
