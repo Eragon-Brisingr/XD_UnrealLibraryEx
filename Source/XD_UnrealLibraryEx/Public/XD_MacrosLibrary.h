@@ -65,3 +65,6 @@ private:
 
 //用来查看私有变量的偏移地址
 #define LookMemberOffset(type, member) (size_t)&(((type*)0)->member)
+
+//用于调用虚幻的接口
+#define CallUnrealInterface(InterfaceName,FunctionName) InterfaceName##::Execute_##FunctionName
