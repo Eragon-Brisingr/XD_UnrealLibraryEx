@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,10 +14,10 @@ class XD_UNREALLIBRARYEX_API UXD_AnimationFunctionLibrary : public UBlueprintFun
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintPure, Category = "”Œœ∑|∂Øª≠")
+	UFUNCTION(BlueprintPure, Category = "Ê∏∏Êàè|Âä®Áîª")
 	static float GetMontageGlobalWeight(class ACharacter* Character, FName SlotName);
 	
-	UFUNCTION(BlueprintPure, Category = "”Œœ∑|∂Øª≠")
+	UFUNCTION(BlueprintPure, Category = "Ê∏∏Êàè|Âä®Áîª")
 	static bool IsPlayingMontage(class ACharacter* Character, FName SlotName);
 	
 };
