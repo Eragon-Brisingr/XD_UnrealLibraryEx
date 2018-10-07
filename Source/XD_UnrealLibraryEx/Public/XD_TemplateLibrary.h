@@ -13,7 +13,7 @@
 
  //指针数组的转型方法，注意类型安全
 template<typename ToType, typename FromType>
-static TArray<ToType> ArrayCast(const TArray<FromType>& Array)
+static TArray<ToType>& ArrayCast(const TArray<FromType>& Array)
 {
 	return *static_cast<TArray<ToType>*>((void*)(&Array));
 }
