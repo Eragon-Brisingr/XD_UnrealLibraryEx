@@ -17,6 +17,7 @@ public:
 	UXD_UnrealLibrarySettings();
 
 	UPROPERTY(EditAnywhere, Category = "调试", Config)
-	TSubclassOf<class UXD_DebugInfoCollector> DebugInfoCollector;
+	TSoftClassPtr<class UXD_DebugInfoCollector> DebugInfoCollector;
 
+	TSubclassOf<class UXD_DebugInfoCollector> GetDebugInfoCollector() const;
 };

@@ -11,3 +11,8 @@ UXD_UnrealLibrarySettings::UXD_UnrealLibrarySettings()
 {
 
 }
+
+TSubclassOf<class UXD_DebugInfoCollector> UXD_UnrealLibrarySettings::GetDebugInfoCollector() const
+{
+	return DebugInfoCollector.LoadSynchronous();
+}

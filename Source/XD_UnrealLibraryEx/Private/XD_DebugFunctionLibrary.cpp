@@ -9,7 +9,7 @@
 
 FString UXD_DebugFunctionLibrary::GetDebugName(const UObject* Object)
 {
-	if (TSubclassOf<UXD_DebugInfoCollector> XD_DebugInfoCollector = GetDefault<UXD_UnrealLibrarySettings>()->DebugInfoCollector)
+	if (TSubclassOf<UXD_DebugInfoCollector> XD_DebugInfoCollector = GetDefault<UXD_UnrealLibrarySettings>()->GetDebugInfoCollector())
 	{
 		return XD_DebugInfoCollector.GetDefaultObject()->GetDebugName(Object);
 	}
