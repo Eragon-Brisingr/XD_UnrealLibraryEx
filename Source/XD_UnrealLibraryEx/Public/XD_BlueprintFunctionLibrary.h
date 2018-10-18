@@ -136,14 +136,6 @@ public:
 	UFUNCTION(BlueprintPure, meta=(DisplayName = "String > String", CompactNodeTitle = ">", Keywords = "> greater"), Category="Math|String")
 	static bool Greater_StringString(const FString& A, const FString& B);
 	
-	//动画节点使用
-public:
-	UFUNCTION(BlueprintCallable, Category = "游戏|工具")
-	static AStaticMeshActor* SpawnStaticMeshActorAttachToBone(UPrimitiveComponent* PrimitiveComponent, UStaticMesh* StaticMesh, const FName& SocketName, const FTransform& RelationTransfrom);
-
-	UFUNCTION(BlueprintCallable, Category = "游戏|工具")
-	static bool RemoveStaticMeshActor(UPrimitiveComponent* PrimitiveComponent, UStaticMesh* StaticMesh);
-	
 public:
 	//默认蓝图版本很多组件只允许它的Owner销毁，此版本不进行该检查
 	UFUNCTION(BlueprintCallable, Category = "游戏|工具")

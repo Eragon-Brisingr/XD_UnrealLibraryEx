@@ -191,38 +191,6 @@ bool UXD_BlueprintFunctionLibrary::Greater_StringString(const FString& A, const 
 	return A > B;
 }
 
-AStaticMeshActor* UXD_BlueprintFunctionLibrary::SpawnStaticMeshActorAttachToBone(UPrimitiveComponent* PrimitiveComponent, UStaticMesh* StaticMesh, const FName& SocketName, const FTransform& RelationTransfrom)
-{
-	AStaticMeshActor* StaticMeshActor = PrimitiveComponent->GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), RelationTransfrom);
-	StaticMeshActor->SetMobility(EComponentMobility::Movable);
-	StaticMeshActor->GetStaticMeshComponent()->SetStaticMesh(StaticMesh);
-	StaticMeshActor->GetStaticMeshComponent()->SetCollisionProfileName(TEXT("Item"));
-	StaticMeshActor->GetStaticMeshComponent()->SetCanEverAffectNavigation(false);
-	StaticMeshActor->AttachToComponent(PrimitiveComponent, FAttachmentTransformRules::KeepRelativeTransform, SocketName);
-	return StaticMeshActor;
-}
-
-bool UXD_BlueprintFunctionLibrary::RemoveStaticMeshActor(UPrimitiveComponent* PrimitiveComponent, UStaticMesh* StaticMesh)
-{
-	if (PrimitiveComponent)
-	{
-		TArray<AActor*> AttachActors;
-		PrimitiveComponent->GetOwner()->GetAttachedActors(AttachActors);
-		for (AActor* Actor : AttachActors)
-		{
-			if (AStaticMeshActor* StaticMeshActor = Cast<AStaticMeshActor>(Actor))
-			{
-				if (StaticMeshActor->GetStaticMeshComponent()->GetStaticMesh() == StaticMesh)
-				{
-					StaticMeshActor->Destroy();
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
 void UXD_BlueprintFunctionLibrary::DestroyComponent(UActorComponent* Component)
 {
 	if (Component)
