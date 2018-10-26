@@ -94,7 +94,7 @@ void FPropertyCustomizeHelper::SetObjectValue(const TSharedPtr<IPropertyHandle>&
 	}
 	else
 	{
-		SetValueFromFormattedString(PropertyHandle, "null");
+		SetValue<UObject*>(PropertyHandle, nullptr);
 	}
 }
 
