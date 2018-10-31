@@ -52,16 +52,16 @@ private:
 };
 
 //获取类型名，允许前向声明
-#define GET_TYPE_NAME_STRING_CHECKED(Type) XD_Macros_Helper::GetTypeName<Type>(#Type)
+#define GET_TYPE_NAME_STRING_CHECKED(Type) FString(XD_Macros_Helper::GetTypeName<Type>(#Type))
 
 //获取类型名，允许前向声明
-#define GET_TYPE_NAME_CHECKED(Type) FName(GET_TYPE_NAME_STRING_CHECKED(Type))
+#define GET_TYPE_NAME_CHECKED(Type) FName(XD_Macros_Helper::GetTypeName<Type>(#Type))
 
 //获取c++中定义时的类型名，允许前向声明
 #define GET_TYPE_CPP_NAME_STRING_CHECKED(Type) (sizeof(Type), FString(TEXT(#Type)))
 
 //获取c++中定义时的类型名，允许前向声明
-#define GET_TYPE_CPP_NAME_CHECKED(Type) FName(GET_TYPE_CPP_NAME_STRING_CHECKED(Type))
+#define GET_TYPE_CPP_NAME_CHECKED(Type) FName(*GET_TYPE_CPP_NAME_STRING_CHECKED(Type))
 
 //用来查看私有变量的偏移地址
 #define LookMemberOffset(type, member) (size_t)&(((type*)0)->member)
