@@ -8,7 +8,10 @@ UActorComponent* UXD_ActorFunctionLibrary::AddComponent(AActor* Actor, TSubclass
 	{
 		UActorComponent* Component = NewObject<UActorComponent>(Actor, Class, Name);
 		Actor->AddOwnedComponent(Component);
-		Component->RegisterComponent();
+		if (Actor->GetWorld())
+		{
+			Component->RegisterComponent();
+		}
 		return Component;
 	}
 	return nullptr;
