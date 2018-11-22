@@ -3,6 +3,10 @@
 #include "XD_PropertyCustomizationEx.h"
 #include <DetailWidgetRow.h>
 #include <IDetailChildrenBuilder.h>
+#include "XD_AssetFunctionLibrary.h"
+#include "AssetEditorManager.h"
+
+#define LOCTEXT_NAMESPACE "XD_PropertyCustomizationEx"
 
 void FPropertyCustomizeHelper::HeaderRowDrawProperty(class FDetailWidgetRow& HeaderRow, const TSharedPtr<IPropertyHandle>& PropertyHandle, bool bDisplayDefaultPropertyButtons /*= true*/)
 {
@@ -98,7 +102,7 @@ void FPropertyCustomizeHelper::SetObjectValue(const TSharedPtr<IPropertyHandle>&
 	}
 }
 
-void IPropertyTypeWithInstancedButtonHelper::CustomizeHeader(UClass* Type, const FText& ButtonName, TSharedRef<class IPropertyHandle> StructPropertyHandle, class FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& StructCustomizationUtils)
+void IPropertyTypeWithInstancedButtonHelper::CustomizeHeader(UClass* Type, const TSubclassOf<class UFactory>& Factory, const FText& ButtonName, TSharedRef<class IPropertyHandle> StructPropertyHandle, TSharedRef<class IPropertyHandle> InstancePropertyHandle, class FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& StructCustomizationUtils)
 {
 	HeaderRow.NameContent()
 		[
@@ -111,35 +115,87 @@ void IPropertyTypeWithInstancedButtonHelper::CustomizeHeader(UClass* Type, const
 			+ SVerticalBox::Slot()
 		.AutoHeight()
 		[
-			StructPropertyHandle->CreatePropertyValueWidget()
+			InstancePropertyHandle->CreatePropertyValueWidget()
 		]
 	+ SVerticalBox::Slot()
 		.AutoHeight()
 		.HAlign(HAlign_Right)
 		[
-			SNew(SButton)
-			.OnClicked_Lambda([=]() {
-		FPropertyCustomizeHelper::SetObjectValue(StructPropertyHandle, NewObject<UObject>(FPropertyCustomizeHelper::GetOuter(StructPropertyHandle), Type));
-		return FReply::Handled();
-	})
-		.IsEnabled_Lambda([=]() {
-		if (UObject* Outer = FPropertyCustomizeHelper::GetOuter(StructPropertyHandle))
-		{
-			if (Outer->HasAnyFlags(RF_ClassDefaultObject))
-			{
-				return false;
-			}
-		}
-		if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(StructPropertyHandle))
-		{
-			return Instance->IsAsset();
-		}
-		return true;
-	})
-		[
-			SNew(STextBlock)
-			.Text(ButtonName)
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot()
+				.AutoWidth()
+			[
+				SNew(SButton)
+				.OnClicked_Lambda([=]() {
+					if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle))
+					{
+						FAssetEditorManager::Get().OpenEditorForAsset(Instance);
+					}
+					return FReply::Handled();
+				})
+				.IsEnabled_Lambda([=]() {
+					return FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle) ? true : false;
+				})
+				[
+					SNew(STextBlock)
+					.Text(LOCTEXT("打开", "打开"))
+				]
+			]
+			+SHorizontalBox::Slot()
+				.AutoWidth()
+			[
+				SNew(SButton)
+				.OnClicked_Lambda([=]() {
+					FPropertyCustomizeHelper::SetObjectValue(InstancePropertyHandle, NewObject<UObject>(FPropertyCustomizeHelper::GetOuter(InstancePropertyHandle), Type, NAME_None, RF_ArchetypeObject | RF_DefaultSubObject));
+					return FReply::Handled();
+				})
+				.IsEnabled_Lambda([=]() {
+					if (UObject* Outer = FPropertyCustomizeHelper::GetOuter(InstancePropertyHandle))
+					{
+						if (Outer->HasAnyFlags(RF_ClassDefaultObject))
+						{
+							return false;
+						}
+					}
+					if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle))
+					{
+						return Instance->IsAsset();
+					}
+					return true;
+				})
+				[
+					SNew(STextBlock)
+					.Text(ButtonName)
+				]
+			]
+			+ SHorizontalBox::Slot()
+				.AutoWidth()
+			[
+				SNew(SButton)
+				.OnClicked_Lambda([=]() {
+					if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle))
+					{
+						FPropertyCustomizeHelper::SetValue(InstancePropertyHandle, UXD_AssetFunctionLibrary::ConvertObjectToAsset(Instance, Instance->GetOuter(), Factory));
+					}
+					return FReply::Handled();
+				})
+				.IsEnabled_Lambda([=]() {
+					if (Factory)
+					{
+						if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle))
+						{
+							return !Instance->IsAsset();
+						}
+					}
+					return false;
+				})
+				[
+					SNew(STextBlock)
+					.Text(LOCTEXT("创建为资源", "创建为资源"))
+				]
+			]
 		]
-		]
-		];
+	];
 }
+
+#undef LOCTEXT_NAMESPACE

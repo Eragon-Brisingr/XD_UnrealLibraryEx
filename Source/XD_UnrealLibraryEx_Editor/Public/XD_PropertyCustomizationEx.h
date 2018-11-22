@@ -83,5 +83,5 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 
 struct XD_UNREALLIBRARYEX_EDITOR_API IPropertyTypeWithInstancedButtonHelper
 {
-	static void CustomizeHeader(UClass* Type, const FText& ButtonName, TSharedRef<class IPropertyHandle> StructPropertyHandle, class FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& StructCustomizationUtils);
+	static void CustomizeHeader(UClass* Type, const TSubclassOf<class UFactory>& Factory, const FText& ButtonName, TSharedRef<class IPropertyHandle> StructPropertyHandle, TSharedRef<class IPropertyHandle> InstancePropertyHandle, class FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& StructCustomizationUtils);
 };

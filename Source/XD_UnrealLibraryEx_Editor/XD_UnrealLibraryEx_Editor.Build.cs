@@ -41,6 +41,8 @@ public class XD_UnrealLibraryEx_Editor : ModuleRules
 				"SlateCore",
                 "AIModule",
                 "NavigationSystem",
+
+                "UnrealEd",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
