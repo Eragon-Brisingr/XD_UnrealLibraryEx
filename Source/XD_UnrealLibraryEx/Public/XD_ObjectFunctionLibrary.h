@@ -16,12 +16,12 @@ class XD_UNREALLIBRARYEX_API UXD_ObjectFunctionLibrary : public UBlueprintFuncti
 	public:
 	//拷贝Object，保证新的Object一定不为RF_DefaultSubObject
 	UFUNCTION(BlueprintPure, Category = "游戏|工具", meta = (DeterminesOutputType = "Object", DefaultToSelf = "Outer", HidePin = "Outer", CompactNodeTitle = "Copy"))
-	static UObject* CopyObject(const UObject* Object, UObject* Outer);
+	static UObject* CopyObject(const UObject* Object, UObject* Outer, const FName Name = NAME_None);
 
 	template<typename Type>
-	static Type* DuplicateObject(const Type* Object, UObject* Outer)
+	static Type* DuplicateObject(const Type* Object, UObject* Outer, const FName Name = NAME_None)
 	{
-		return (Type*)CopyObject(Object, Outer);
+		return (Type*)CopyObject(Object, Outer, Name);
 	}
 
 	//编辑器模式下软引用引用到的对象可能和场景中的不同，所以编辑器下比较对象的名字确定是不是同一对象，而打包后直接比较对象地址

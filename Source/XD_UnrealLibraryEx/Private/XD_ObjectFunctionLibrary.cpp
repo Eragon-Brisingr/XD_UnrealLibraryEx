@@ -6,15 +6,15 @@
 #include <AssetRegistryModule.h>
 #include "XD_GameTypeEx.h"
 
-UObject* UXD_ObjectFunctionLibrary::CopyObject(const UObject* Object, UObject* Outer)
+UObject* UXD_ObjectFunctionLibrary::CopyObject(const UObject* Object, UObject* Outer, const FName Name /*= NAME_None*/)
 {
 	if (Object)
 	{
-		UObject* Res = ::DuplicateObject(Object, Outer);
+		UObject* Res = ::DuplicateObject(Object, Outer, Name);
 		if (Res->HasAnyFlags(RF_XD_WasLoaded))
 		{
 			Res->ClearFlags(RF_XD_WasLoaded);
-			Res->Rename();
+			//Res->Rename();
 		}
 		return Res;
 	}

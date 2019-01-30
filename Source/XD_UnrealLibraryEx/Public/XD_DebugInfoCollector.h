@@ -14,6 +14,8 @@ class UXD_DebugInfoCollector : public UObject
 {
 	GENERATED_BODY()
 public:
+	UXD_DebugInfoCollector();
+
 	UPROPERTY(EditAnywhere, Category = "调试")
 	TMap<UClass*, TSubclassOf<class UXD_DebugInfoConverter>> TypeDebugInfoMapping;
 
@@ -29,7 +31,15 @@ class XD_UNREALLIBRARYEX_API UXD_DebugInfoConverter : public UObject
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintNativeEvent, Category = "调试")
-	FString GetDebugName(const UObject* Object) const;
-	virtual FString GetDebugName_Implementation(const UObject* Object) const;
+	virtual FString GetDebugName(const UObject* Object) const { return ReceiveGetDebugName(Object); }
+	UFUNCTION(BlueprintImplementableEvent, Category = "调试")
+	FString ReceiveGetDebugName(const UObject* Object) const;
+};
+
+UCLASS()
+class XD_UNREALLIBRARYEX_API UObjectDebugInfoConverter : public UXD_DebugInfoConverter
+{
+	GENERATED_BODY()
+public:
+	FString GetDebugName(const UObject* Object) const override;
 };
