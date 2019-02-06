@@ -11,11 +11,7 @@ UObject* UXD_ObjectFunctionLibrary::CopyObject(const UObject* Object, UObject* O
 	if (Object)
 	{
 		UObject* Res = ::DuplicateObject(Object, Outer, Name);
-		if (Res->HasAnyFlags(RF_XD_WasLoaded))
-		{
-			Res->ClearFlags(RF_XD_WasLoaded);
-			//Res->Rename();
-		}
+		Res->ClearFlags(RF_InPackageFlags);
 		return Res;
 	}
 	return nullptr;
