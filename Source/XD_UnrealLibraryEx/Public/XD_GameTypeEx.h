@@ -10,7 +10,7 @@
  * 
  */
 
-#define RF_InPackageFlags ((EObjectFlags)(RF_ClassDefaultObject | RF_ArchetypeObject | RF_DefaultSubObject | RF_InheritableComponentTemplate | RF_WasLoaded))
+#define RF_InPackageFlags ((EObjectFlags)(RF_ClassDefaultObject | RF_ArchetypeObject | RF_DefaultSubObject | RF_InheritableComponentTemplate | RF_WasLoaded | RF_LoadCompleted))
 
 //Delegate Handle的蓝图包装  
 USTRUCT(BlueprintType)
