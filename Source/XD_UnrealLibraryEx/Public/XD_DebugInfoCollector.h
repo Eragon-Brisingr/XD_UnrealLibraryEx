@@ -43,3 +43,11 @@ class XD_UNREALLIBRARYEX_API UObjectDebugInfoConverter : public UXD_DebugInfoCon
 public:
 	FString GetDebugName(const UObject* Object) const override;
 };
+
+UCLASS()
+class XD_UNREALLIBRARYEX_API UClassDebugInfoConverter : public UXD_DebugInfoConverter
+{
+	GENERATED_BODY()
+public:
+	FString GetDebugName(const UObject* Object) const override;
+};

@@ -5,11 +5,7 @@
 UXD_DebugInfoCollector::UXD_DebugInfoCollector()
 {
 	TypeDebugInfoMapping.Add(UObject::StaticClass(), UObjectDebugInfoConverter::StaticClass());
-}
-
-FString UObjectDebugInfoConverter::GetDebugName(const UObject* Object) const
-{
-	return FString::Printf(TEXT("[%s]"), *Object->GetName());
+	TypeDebugInfoMapping.Add(UClass::StaticClass(), UClassDebugInfoConverter::StaticClass());
 }
 
 FString UXD_DebugInfoCollector::GetDebugName(const UObject* Object)
@@ -34,4 +30,19 @@ FString UXD_DebugInfoCollector::GetDebugName(const UObject* Object)
 	{
 		return TEXT("None");
 	}
+}
+
+FString UObjectDebugInfoConverter::GetDebugName(const UObject* Object) const
+{
+	return FString::Printf(TEXT("[%s]"), *Object->GetName());
+}
+
+FString UClassDebugInfoConverter::GetDebugName(const UObject* Object) const
+{
+	const UClass* Class = CastChecked<UClass>(Object);
+#if WITH_EDITOR
+	return FString::Printf(TEXT("[%s]"), *Class->GetDisplayNameText().ToString());
+#else
+	return FString::Printf(TEXT("[%s]"), *Class->GetName().ToString());
+#endif
 }
