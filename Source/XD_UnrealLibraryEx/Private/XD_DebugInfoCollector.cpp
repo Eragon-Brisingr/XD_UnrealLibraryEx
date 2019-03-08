@@ -43,6 +43,6 @@ FString UClassDebugInfoConverter::GetDebugName(const UObject* Object) const
 #if WITH_EDITOR
 	return FString::Printf(TEXT("[%s]"), *Class->GetDisplayNameText().ToString());
 #else
-	return FString::Printf(TEXT("[%s]"), *Class->GetName().ToString());
+	return FString::Printf(TEXT("[%s]"), *Class->GetName());
 #endif
 }
