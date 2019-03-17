@@ -19,13 +19,11 @@ FVector UXD_CameraFunctionLibrary::GetCameraLocation(const UObject* WorldContext
 	{
 		if (!World->IsGameWorld())
 		{
-			FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
-			return client->GetViewLocation();
+			if (FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient()))
+			{
+				return client->GetViewLocation();
+			}
 		}
-	}
-	else
-	{
-		return FVector::ZeroVector;
 	}
 #endif
 	if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
@@ -40,15 +38,11 @@ FRotator UXD_CameraFunctionLibrary::GetCameraRotation(const UObject* WorldContex
 #if WITH_EDITOR
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		if (!WorldContextObject->GetWorld()->IsGameWorld())
+		if (!World->IsGameWorld())
 		{
 			FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
 			return client->GetViewRotation();
 		}
-	}
-	else
-	{
-		return FRotator::ZeroRotator;
 	}
 #endif
 	if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(WorldContextObject, 0))
