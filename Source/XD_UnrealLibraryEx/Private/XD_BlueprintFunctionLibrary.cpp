@@ -227,18 +227,18 @@ void UXD_BlueprintFunctionLibrary::BreakNavigationLink(const FNavigationLink& Na
 
 bool UXD_BlueprintFunctionLibrary::IsAreaExistNavigationMesh(UObject* WorldContextObject, FVector TestLoc)
 {
-	UNavigationSystemV1* const NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(WorldContextObject);
-	if (!NavSys)
-	{
-		return false;
-	}
-	const ANavigationData* NavData = NavSys->GetNavDataForProps(FNavAgentProperties::DefaultProperties);
-	if (!NavData)
-	{
-		return false;
-	}
-	FPathFindingQuery Query(WorldContextObject, *NavData, TestLoc, TestLoc);
-	return NavSys->TestPathSync(Query);
+ 	UNavigationSystemV1* const NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(WorldContextObject);
+ 	if (!NavSys)
+ 	{
+ 		return false;
+ 	}
+ 	const ANavigationData* NavData = NavSys->GetNavDataForProps(FNavAgentProperties::DefaultProperties);
+ 	if (!NavData)
+ 	{
+ 		return false;
+ 	}
+	FNavLocation NavLocation;
+	return NavData->GetRandomPointInNavigableRadius(TestLoc, 1.f, NavLocation);
 }
 
 FVector UXD_BlueprintFunctionLibrary::GetCurrentTargetLocation(UPathFollowingComponent* PathFollowingComponent)
