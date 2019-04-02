@@ -177,109 +177,110 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 
 TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclass(UClass* Class, bool ContainsAbstract)
 {
-	TSet<UClass*> Res;
+	TArray<UClass*> Res;
 
-	TArray<UClass*> NativeParentClassList;
-	NativeParentClassList.Add(Class);
-
-	//搜集代码类型
-	//for (TObjectIterator<UClass> It; It; ++It)
-	for (UClass* It : TObjectRange<UClass>())
+	TArray<UClass*> DerivedClasses;
+	GetDerivedClasses(Class, DerivedClasses, true);
+	for (UClass* DerivedClasse : DerivedClasses)
 	{
-		if (It->IsChildOf(Class))
+		if (ContainsAbstract && DerivedClasse->HasAnyClassFlags(CLASS_Abstract))
 		{
-			if (!ContainsAbstract && It->HasAnyClassFlags(CLASS_Abstract))
-			{
-				NativeParentClassList.Add(It);
-				continue;
-			}
-
-			if (It->GetName().StartsWith("REINST") || It->GetName().StartsWith("SKEL"))
-			{
-				continue;
-			}
-
-			Res.Add(It);
+			continue;
 		}
+
+		if (DerivedClasse->GetName().StartsWith("REINST") || DerivedClasse->GetName().StartsWith("SKEL"))
+		{
+			continue;
+		}
+
+		Res.Add(DerivedClasse);
 	}
 
-
-	//TODO 没处理子类的情况
-	static TArray<UClass*> SeachedClass;
-	if (!SeachedClass.Contains(Class))
+  	static TArray<UClass*> SeachedClasses;
+	if (!SeachedClasses.Contains(Class))
 	{
-		SeachedClass.Add(Class);
+  		SeachedClasses.Add(Class);
 
-		NativeParentClassList.Append(Res.Array());
+		TArray<UClass*>& NativeParentClassList = DerivedClasses;
+		NativeParentClassList.Add(Class);
 
-		//搜集蓝图类型
-		FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
-		TArray<FAssetData> BlueprintList;
+  		//搜集蓝图类型
+  		FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
+  		TArray<FAssetData> BlueprintList;
+  
+  		FARFilter Filter;
+  		Filter.ClassNames.Add(UBlueprint::StaticClass()->GetFName());
+  		AssetRegistryModule.Get().GetAssets(Filter, BlueprintList);
+  
+  		TMap<FString, FAssetData> ParentInfoMaps;
+  
+  		for (FAssetData& AssetData : BlueprintList)
+  		{
+  			FString AssetClassName;
+  			FString AssetParentClassName;
+  			if (AssetData.GetTagValue("GeneratedClass", AssetClassName) && AssetData.GetTagValue("ParentClass", AssetParentClassName))
+  			{
+  				UObject* Outer1(nullptr);
+  				ResolveName(Outer1, AssetClassName, false, false);
+  
+  				UObject* Outer2(nullptr);
+  				ResolveName(Outer2, AssetParentClassName, false, false);
+  
+  				ParentInfoMaps.Add(AssetClassName) = AssetData;
+  			}
+  		}
+  
+  		struct FCheckParentHelper
+  		{
+  			FCheckParentHelper(const TMap<FString, FAssetData>& ParentInfoMaps, const TArray<UClass*>& NativeParentClassList)
+  				:ParentInfoMaps(ParentInfoMaps), NativeParentClassList(NativeParentClassList)
+  			{}
+  			const TMap<FString, FAssetData>& ParentInfoMaps;
+  			const TArray<UClass*>& NativeParentClassList;
+  
+  			bool IsParent(const FString& Name)
+  			{
+  				FString ParentName;
+  				ParentInfoMaps[Name].GetTagValue("ParentClass", ParentName);
+  
+  				UObject* Outer2(nullptr);
+  				ResolveName(Outer2, ParentName, false, false);
+  
+  				if (NativeParentClassList.ContainsByPredicate([&](const UClass* Class) {return Class->GetName() == ParentName; }))
+  				{
+  					return true;
+  				}
+  				else if (ParentInfoMaps.Contains(ParentName))
+  				{
+  					return IsParent(ParentName);
+  				}
+  				return false;
+  			}
+  		}CheckParentHelper(ParentInfoMaps, NativeParentClassList);
+  
+  		for (TPair<FString, FAssetData>& NameAndData : ParentInfoMaps)
+  		{
+  			if (CheckParentHelper.IsParent(NameAndData.Key))
+  			{
+  				FString PathName = NameAndData.Value.PackageName.ToString();
+  				if (UBlueprint* LoadedBlueprint = ConstructorHelpersInternal::FindOrLoadObject<UBlueprint>(PathName))
+  				{
+					UClass* DerivedClass = LoadedBlueprint->GeneratedClass;
+					if (ContainsAbstract && DerivedClass->HasAnyClassFlags(CLASS_Abstract))
+					{
+						continue;
+					}
+					if (Res.Contains(DerivedClass))
+					{
+						continue;
+					}
+  					Res.Add(DerivedClass);
+  				}
+  			}
+  		}
+  	}
 
-		FARFilter Filter;
-		Filter.ClassNames.Add(UBlueprint::StaticClass()->GetFName());
-		AssetRegistryModule.Get().GetAssets(Filter, BlueprintList);
-
-		TMap<FString, FAssetData> ParentInfoMaps;
-
-		for (FAssetData& AssetData : BlueprintList)
-		{
-			FString AssetClassName;
-			FString AssetParentClassName;
-			if (AssetData.GetTagValue("GeneratedClass", AssetClassName) && AssetData.GetTagValue("ParentClass", AssetParentClassName))
-			{
-				UObject* Outer1(NULL);
-				ResolveName(Outer1, AssetClassName, false, false);
-
-				UObject* Outer2(NULL);
-				ResolveName(Outer2, AssetParentClassName, false, false);
-
-				ParentInfoMaps.Add(AssetClassName) = AssetData;
-			}
-		}
-
-		struct FCheckParentHelper
-		{
-			FCheckParentHelper(const TMap<FString, FAssetData>& ParentInfoMaps, const TArray<UClass*>& NativeParentClassList)
-				:ParentInfoMaps(ParentInfoMaps), NativeParentClassList(NativeParentClassList)
-			{}
-			const TMap<FString, FAssetData>& ParentInfoMaps;
-			const TArray<UClass*>& NativeParentClassList;
-
-			bool IsParent(const FString& Name)
-			{
-				FString ParentName;
-				ParentInfoMaps[Name].GetTagValue("ParentClass", ParentName);
-
-				UObject* Outer2(NULL);
-				ResolveName(Outer2, ParentName, false, false);
-
-				if (NativeParentClassList.ContainsByPredicate([&](const UClass* Class) {return Class->GetName() == ParentName; }))
-				{
-					return true;
-				}
-				else if (ParentInfoMaps.Contains(ParentName))
-				{
-					return IsParent(ParentName);
-				}
-				return false;
-			}
-		}CheckParentHelper(ParentInfoMaps, NativeParentClassList);
-
-		for (TPair<FString, FAssetData>& NameAndData : ParentInfoMaps)
-		{
-			if (CheckParentHelper.IsParent(NameAndData.Key))
-			{
-				FString PathName = NameAndData.Value.PackageName.ToString();
-				if (UBlueprint* LoadedBlueprint = ConstructorHelpersInternal::FindOrLoadObject<UBlueprint>(PathName))
-				{
-					Res.Add(*LoadedBlueprint->GeneratedClass);
-				}
-			}
-		}
-	}
-
-	return Res.Array();
+	return Res;
 }
 
 bool UXD_ObjectFunctionLibrary::CompareObject(const UObject* A, const UObject* B, UClass* StopAtClass)
