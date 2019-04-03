@@ -348,7 +348,7 @@ bool UXD_BlueprintFunctionLibrary::IsPlayInPIE(UObject* WorldContextObject)
 
 EEditorWorldType UXD_BlueprintFunctionLibrary::GetWorldType(UObject* WorldContextObject)
 {
-	return WorldContextObject->GetWorld() ? static_cast<EEditorWorldType>(WorldContextObject->GetWorld()->WorldType) : EEditorWorldType::None;
+	return WorldContextObject->GetWorld() ? static_cast<EEditorWorldType>(WorldContextObject->GetWorld()->WorldType.GetValue()) : EEditorWorldType::None;
 }
 
 

@@ -82,7 +82,7 @@ FPropertyAccess::Result FPropertyCustomizeHelper::SetValueFromFormattedString(co
 void FPropertyCustomizeHelper::ForceSetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FText& Text)
 {
 	FString StringValue;
-	FTextStringHelper::WriteToString(StringValue, Text);
+	FTextStringHelper::WriteToBuffer(StringValue, Text);
 	SetValueFromFormattedString(PropertyHandle, StringValue);
 }
 
