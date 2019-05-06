@@ -58,9 +58,9 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 
 	//别在用户输入时的处理中用这个设置值，会导致PropertyHandle的Notify之类的处理无效
 	template<typename ValueType>
-	static ValueType& Value(const TSharedPtr<IPropertyHandle>& PropertyHandle)
+	static ValueType* Value(const TSharedPtr<IPropertyHandle>& PropertyHandle)
 	{
-		return *reinterpret_cast<ValueType*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(GetOuter(PropertyHandle.ToSharedRef()))));
+		return reinterpret_cast<ValueType*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(GetOuter(PropertyHandle.ToSharedRef()))));
 	}
 
 	static FPropertyAccess::Result SetValueFromFormattedString(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FString& InVale, EPropertyValueSetFlags::Type Flags = EPropertyValueSetFlags::DefaultFlags);
