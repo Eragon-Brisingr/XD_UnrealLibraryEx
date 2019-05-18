@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "XD_AnimationFunctionLibrary.generated.h"
 
+class ACharacter;
+
 /**
  * 
  */
@@ -15,9 +17,15 @@ class XD_UNREALLIBRARYEX_API UXD_AnimationFunctionLibrary : public UBlueprintFun
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintPure, Category = "游戏|动画")
-	static float GetMontageGlobalWeight(class ACharacter* Character, FName SlotName);
+	static float GetMontageGlobalWeight(ACharacter* Character, FName SlotName);
 	
 	UFUNCTION(BlueprintPure, Category = "游戏|动画")
-	static bool IsPlayingMontage(class ACharacter* Character, FName SlotName);
+	static bool IsPlayingMontage(ACharacter* Character, FName SlotName);
 	
+public:
+	UFUNCTION(BlueprintPure, Category = "游戏|动画")
+	static FTransform GetMontageRootMotionTransformFromRange(UAnimMontage* Montage, float StartPosition, float EndPosition);
+
+	UFUNCTION(BlueprintPure, Category = "游戏|动画")
+	static FTransform GetMontageAllRootMotionTransform(UAnimMontage* Montage);
 };
