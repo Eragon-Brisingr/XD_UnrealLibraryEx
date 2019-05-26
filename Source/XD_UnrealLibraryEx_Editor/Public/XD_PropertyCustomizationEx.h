@@ -68,20 +68,26 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 	static void ForceSetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FText& Text);
 
 	template<typename Type>
-	static void SetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const Type& Value)
+	static void SetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, const Type& Value, bool NotifyChange = true)
 	{
-		PropertyHandle->NotifyPreChange();
+		if (NotifyChange)
+		{
+			PropertyHandle->NotifyPreChange();
+		}
 		if (Type* Target = reinterpret_cast<Type*>(PropertyHandle->GetValueBaseAddress(reinterpret_cast<uint8*>(GetOuter(PropertyHandle.ToSharedRef())))))
 		{
 			*Target = Value;
-			PropertyHandle->NotifyPostChange(EPropertyValueSetFlags::DefaultFlags);
+			if (NotifyChange)
+			{
+				PropertyHandle->NotifyPostChange(EPropertyValueSetFlags::DefaultFlags);
+			}
 		}
 	}
 
 	static void SetObjectValue(const TSharedPtr<IPropertyHandle>& PropertyHandle, UObject* Object);
 };
 
-struct XD_UNREALLIBRARYEX_EDITOR_API IPropertyTypeWithInstancedButtonHelper
+struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyTypeWithInstancedButtonHelper
 {
 	static void CustomizeHeader(UClass* Type, const TSubclassOf<class UFactory>& Factory, const FText& ButtonName, TSharedRef<class IPropertyHandle> StructPropertyHandle, TSharedRef<class IPropertyHandle> InstancePropertyHandle, class FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& StructCustomizationUtils);
 };
