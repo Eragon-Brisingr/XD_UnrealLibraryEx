@@ -15,6 +15,9 @@ class XD_UNREALLIBRARYEX_API UXD_TextureFunctionLibrary : public UBlueprintFunct
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintPure, Category = "游戏|工具")
+	static float GetPixelBrightness(const FColor& Pixel);
 
-
+	UFUNCTION(BlueprintCallable, Category = "游戏|工具")
+	static float GetPixelsMaxBrightness(const TArray<FColor>& Pixels);
 };
