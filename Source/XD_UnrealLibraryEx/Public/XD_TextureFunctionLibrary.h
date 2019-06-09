@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,9 +15,9 @@ class XD_UNREALLIBRARYEX_API UXD_TextureFunctionLibrary : public UBlueprintFunct
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category = "”Œœ∑|π§æﬂ")
+	UFUNCTION(BlueprintPure, Category = "Ê∏∏Êàè|Â∑•ÂÖ∑")
 	static float GetPixelBrightness(const FColor& Pixel);
 
-	UFUNCTION(BlueprintCallable, Category = "”Œœ∑|π§æﬂ")
+	UFUNCTION(BlueprintCallable, Category = "Ê∏∏Êàè|Â∑•ÂÖ∑")
 	static float GetPixelsMaxBrightness(const TArray<FColor>& Pixels);
 };
