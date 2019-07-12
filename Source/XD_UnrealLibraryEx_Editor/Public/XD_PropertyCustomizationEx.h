@@ -39,9 +39,9 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 
 	static bool IsInArray(const TSharedRef<IPropertyHandle>& PropertyHandle);
 
-	static void StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FString>& ExcludePropertyNames = {});
+	static void StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames = {});
 
-	static TSharedPtr<IPropertyHandle> GetPropertyHandleByName(TSharedRef<class IPropertyHandle> StructPropertyHandle, FString ChildPropertyName);
+	static TSharedPtr<IPropertyHandle> GetPropertyHandleByName(TSharedRef<class IPropertyHandle> StructPropertyHandle, FName ChildPropertyName);
 
 	template<typename ValueType>
 	static ValueType GetValue(const TSharedPtr<IPropertyHandle>& PropertyHandle)

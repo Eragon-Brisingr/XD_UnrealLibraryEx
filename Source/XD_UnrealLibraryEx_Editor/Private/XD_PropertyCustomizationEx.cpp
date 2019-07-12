@@ -40,32 +40,22 @@ bool FPropertyCustomizeHelper::IsInArray(const TSharedRef<IPropertyHandle>& Prop
 	return PropertyHandle->GetIndexInArray() != INDEX_NONE;
 }
 
-void FPropertyCustomizeHelper::StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FString>& ExcludePropertyNames)
+void FPropertyCustomizeHelper::StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames)
 {
 	for (uint32 ChildIndex = 0; ChildIndex < GetNumChildren(PropertyHandle); ++ChildIndex)
 	{
-		const TSharedRef< IPropertyHandle > ChildHandle = PropertyHandle->GetChildHandle(ChildIndex).ToSharedRef();
+		const TSharedRef<IPropertyHandle> ChildHandle = PropertyHandle->GetChildHandle(ChildIndex).ToSharedRef();
 
-		if (!ExcludePropertyNames.Contains(ChildHandle->GetProperty()->GetName()))
+		if (!ExcludePropertyNames.Contains(*ChildHandle->GetProperty()->GetNameCPP()))
 		{
 			StructBuilder.AddProperty(ChildHandle);
 		}
 	}
 }
 
-TSharedPtr<IPropertyHandle> FPropertyCustomizeHelper::GetPropertyHandleByName(TSharedRef<class IPropertyHandle> StructPropertyHandle, FString ChildPropertyName)
+TSharedPtr<IPropertyHandle> FPropertyCustomizeHelper::GetPropertyHandleByName(TSharedRef<class IPropertyHandle> StructPropertyHandle, FName ChildPropertyName)
 {
-	uint32 NumChildren;
-	StructPropertyHandle->GetNumChildren(NumChildren);
-	for (uint32 ChildIndex = 0; ChildIndex < NumChildren; ++ChildIndex)
-	{
-		const TSharedRef< IPropertyHandle > ChildHandle = StructPropertyHandle->GetChildHandle(ChildIndex).ToSharedRef();
-		if (ChildHandle->GetProperty()->GetName() == ChildPropertyName)
-		{
-			return ChildHandle;
-		}
-	}
-	return nullptr;
+	return StructPropertyHandle->GetChildHandle(ChildPropertyName);
 }
 
 FPropertyAccess::Result FPropertyCustomizeHelper::SetValueFromFormattedString(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FString& InVale, EPropertyValueSetFlags::Type Flags /*= EPropertyValueSetFlags::DefaultFlags*/)
