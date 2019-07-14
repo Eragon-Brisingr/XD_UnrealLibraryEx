@@ -17,7 +17,7 @@ FVector UXD_CameraFunctionLibrary::GetCameraLocation(const UObject* WorldContext
 #if WITH_EDITOR
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		if (!World->IsGameWorld())
+		if (!World->IsGameWorld() || GEditor->bIsSimulatingInEditor)
 		{
 			if (FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient()))
 			{
@@ -38,10 +38,12 @@ FRotator UXD_CameraFunctionLibrary::GetCameraRotation(const UObject* WorldContex
 #if WITH_EDITOR
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
-		if (!World->IsGameWorld())
+		if (!World->IsGameWorld() || GEditor->bIsSimulatingInEditor)
 		{
-			FLevelEditorViewportClient* client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient());
-			return client->GetViewRotation();
+			if (FLevelEditorViewportClient * client = static_cast<FLevelEditorViewportClient*>(GEditor->GetActiveViewport()->GetClient()))
+			{
+				return client->GetViewRotation();
+			}
 		}
 	}
 #endif
