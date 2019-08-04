@@ -57,13 +57,16 @@ class XD_UNREALLIBRARYEX_API UXD_ObjectFunctionLibrary : public UBlueprintFuncti
 	static FString GetObjectPropertysDesc(const UObject* Object, UClass* StopAtClass, int32 LineKeepChars = 40);
 
 	UFUNCTION(BlueprintCallable, Category = "游戏|工具", meta = (DeterminesOutputType = "Class"))
-	static TArray<UClass*> GetAllSubclass(UClass* Class, bool ContainsAbstract = false);
+	static TArray<UClass*> GetAllSubclass(UClass* Class, bool ExculdeAbstract = true);
 
 	template<typename Type>
-	static TArray<TSubclassOf<Type>> GetAllSubclass(bool ContainsAbstract = false)
+	static TArray<TSubclassOf<Type>> GetAllSubclass(EClassFlags ExcludeFlags = EClassFlags::CLASS_Abstract)
 	{
-		return ArrayCast<TSubclassOf<Type>>(GetAllSubclass(Type::StaticClass(), ContainsAbstract));
+		return ArrayCast<TSubclassOf<Type>>(GetAllSubclassImpl(Type::StaticClass(), ExcludeFlags));
 	}
+private:
+	static TArray<UClass*> GetAllSubclassImpl(UClass* Class, EClassFlags ExcludeFlags);
+public:
 
 	UFUNCTION(BlueprintPure, Category = "游戏|工具")
 	static bool CompareObject(const UObject* A, const UObject* B, UClass* StopAtClass);

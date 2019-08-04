@@ -175,7 +175,12 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 }
 
 
-TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclass(UClass* Class, bool ContainsAbstract)
+TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclass(UClass* Class, bool ExculdeAbstract)
+{
+	return GetAllSubclassImpl(Class, ExculdeAbstract ? EClassFlags::CLASS_Abstract : EClassFlags::CLASS_None);
+}
+
+TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclassImpl(UClass* Class, EClassFlags ExcludeFlags)
 {
 	TArray<UClass*> Res;
 
@@ -183,7 +188,7 @@ TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclass(UClass* Class, bool Co
 	GetDerivedClasses(Class, DerivedClasses, true);
 	for (UClass* DerivedClasse : DerivedClasses)
 	{
-		if (ContainsAbstract && DerivedClasse->HasAnyClassFlags(CLASS_Abstract))
+		if (DerivedClasse->HasAnyClassFlags(ExcludeFlags))
 		{
 			continue;
 		}
@@ -266,7 +271,7 @@ TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclass(UClass* Class, bool Co
   				if (UBlueprint* LoadedBlueprint = ConstructorHelpersInternal::FindOrLoadObject<UBlueprint>(PathName))
   				{
 					UClass* DerivedClass = LoadedBlueprint->GeneratedClass;
-					if (ContainsAbstract && DerivedClass->HasAnyClassFlags(CLASS_Abstract))
+					if (DerivedClass->HasAnyClassFlags(ExcludeFlags))
 					{
 						continue;
 					}
