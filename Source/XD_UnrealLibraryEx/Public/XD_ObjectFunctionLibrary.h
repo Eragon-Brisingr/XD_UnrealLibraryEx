@@ -25,26 +25,14 @@ class XD_UNREALLIBRARYEX_API UXD_ObjectFunctionLibrary : public UBlueprintFuncti
 		return (Type*)CopyObject(Object, Outer, Name);
 	}
 
-	//编辑器模式下软引用引用到的对象可能和场景中的不同，所以编辑器下比较对象的名字确定是不是同一对象，而打包后直接比较对象地址
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Equal (Object == SoftObjectReference)", CompactNodeTitle = "=="), Category = "游戏|工具")
-	static bool EqualEqual_Object_SoftObject(UObject* A, const TAssetPtr<UObject>& B);
+	UFUNCTION(BlueprintPure, Category = "游戏|工具", meta = (WorldContext = "WorldContextObject", CallableWithoutWorldContext, DeterminesOutputType = SoftActorPtr, BlueprintInternalUseOnly = "true"))
+	static UObject* ResolveSoftObject(UObject* WorldContextObject, const TSoftObjectPtr<UObject>& SoftObjectPtr);
 
-	//编辑器模式下软引用引用到的对象可能和场景中的不同，所以编辑器下比较对象的名字确定是不是同一对象，而打包后直接比较对象地址
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Equal (SoftObjectReference == Object)", CompactNodeTitle = "=="), Category = "游戏|工具")
-	static bool EqualEqual_SoftObject_Object(const TAssetPtr<UObject>& A, UObject* B);
-
-	//编辑器模式下SoftObjectPtr指向的Actor和游戏中的Actor不一样，要通过比较名字来获取
-	UFUNCTION(BlueprintPure, Category = "游戏|工具", meta = (WorldContext = "WorldContextObject", CallableWithoutWorldContext, DeterminesOutputType = "TypeInfo", BlueprintInternalUseOnly = "true"))
-	static AActor* GetActorSafe(UObject* WorldContextObject, const TSoftObjectPtr<AActor>& SoftActorPtr, TSubclassOf<AActor> Type);
-
+	//编辑器模式下SoftObjectPtr指向的Object和游戏中的Object不一样
 	template<typename Type>
-	static Type* GetSoftActorSafe(UObject* WorldContextObject, const TSoftObjectPtr<Type>& SoftActorPtr)
+	static Type* ResolveSoftObject(UObject* WorldContextObject, const TSoftObjectPtr<Type>& SoftActorPtr)
 	{
-		if (SoftActorPtr.IsValid())
-		{
-			return (Type*)GetActorSafe(WorldContextObject, SoftActorPtr, SoftActorPtr->GetClass());
-		}
-		return nullptr;
+		return (Type*)ResolveSoftObject(WorldContextObject, SoftActorPtr, SoftActorPtr->GetClass());
 	}
 
 	UFUNCTION(BlueprintPure, Category = "游戏|工具")
@@ -67,10 +55,5 @@ class XD_UNREALLIBRARYEX_API UXD_ObjectFunctionLibrary : public UBlueprintFuncti
 private:
 	static TArray<UClass*> GetAllSubclassImpl(UClass* Class, EClassFlags ExcludeFlags);
 public:
-
-	UFUNCTION(BlueprintPure, Category = "游戏|工具")
 	static bool CompareObject(const UObject* A, const UObject* B, UClass* StopAtClass);
-	
-	
-	
 };

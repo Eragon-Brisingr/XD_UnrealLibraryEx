@@ -17,49 +17,20 @@ UObject* UXD_ObjectFunctionLibrary::CopyObject(const UObject* Object, const UObj
 	return nullptr;
 }
 
-
-bool UXD_ObjectFunctionLibrary::EqualEqual_Object_SoftObject(UObject* A, const TAssetPtr<UObject>& B)
+UObject* UXD_ObjectFunctionLibrary::ResolveSoftObject(UObject* WorldContextObject, const TSoftObjectPtr<UObject>& SoftObjectPtr)
 {
-#if WITH_EDITOR
-	if (A && B.Get())
+#if WITH_EDITORONLY_DATA
+	int32 ContextPlayInEditorID = WorldContextObject->GetOutermost()->PIEInstanceID;
+	if (ContextPlayInEditorID != INDEX_NONE)
 	{
-		return A->GetName() == B->GetName();
-	}
-	else
-	{
-		return A == B.Get();
-	}
-#else
-	return A == B.Get();
-#endif
-}
-
-bool UXD_ObjectFunctionLibrary::EqualEqual_SoftObject_Object(const TAssetPtr<UObject>& A, UObject* B)
-{
-	return EqualEqual_Object_SoftObject(B, A);
-}
-
-AActor* UXD_ObjectFunctionLibrary::GetActorSafe(UObject* WorldContextObject, const TSoftObjectPtr<AActor>& SoftActorPtr, TSubclassOf<AActor> Type)
-{
-#if WITH_EDITOR
-	if (WorldContextObject || SoftActorPtr.Get())
-	{
-		if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+		FSoftObjectPath TempPath = SoftObjectPtr.ToSoftObjectPath();
+		if (TempPath.FixupForPIE(ContextPlayInEditorID))
 		{
-			for (TActorIterator<AActor> It(World, Type ? Type : AActor::StaticClass()); It; ++It)
-			{
-				AActor* Actor = *It;
-				if (Actor->GetName() == SoftActorPtr->GetName())
-				{
-					return Actor;
-				}
-			}
+			return TempPath.ResolveObject();
 		}
 	}
-	return nullptr;
-#else
-	return SoftActorPtr.Get();
 #endif
+	return SoftObjectPtr.Get();
 }
 
 FString UXD_ObjectFunctionLibrary::GetObjectClassName(const UObject* Object)
