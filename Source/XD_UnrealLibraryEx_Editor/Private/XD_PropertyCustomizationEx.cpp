@@ -3,8 +3,9 @@
 #include "XD_PropertyCustomizationEx.h"
 #include <DetailWidgetRow.h>
 #include <IDetailChildrenBuilder.h>
+#include <Editor.h>
+#include <AssetEditorSubsystem.h>
 #include "XD_AssetFunctionLibrary.h"
-#include "AssetEditorManager.h"
 
 #define LOCTEXT_NAMESPACE "XD_PropertyCustomizationEx"
 
@@ -119,7 +120,7 @@ void FPropertyTypeWithInstancedButtonHelper::CustomizeHeader(UClass* Type, const
 				.OnClicked_Lambda([=]() {
 					if (UObject* Instance = FPropertyCustomizeHelper::GetValue<UObject*>(InstancePropertyHandle))
 					{
-						FAssetEditorManager::Get().OpenEditorForAsset(Instance);
+						GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()->OpenEditorForAsset(Instance);
 					}
 					return FReply::Handled();
 				})
