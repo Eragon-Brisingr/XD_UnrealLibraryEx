@@ -1,6 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "XD_EditorTickableActor.h"
+#include "Actors/XD_EditorTickableActor.h"
 
 
 // Sets default values

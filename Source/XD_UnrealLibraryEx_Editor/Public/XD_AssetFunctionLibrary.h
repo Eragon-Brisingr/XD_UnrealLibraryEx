@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "SubclassOf.h"
+#include <Templates/SubclassOf.h>
 #include "XD_AssetFunctionLibrary.generated.h"
 
 /**

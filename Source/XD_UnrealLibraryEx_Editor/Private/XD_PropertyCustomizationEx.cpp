@@ -4,7 +4,7 @@
 #include <DetailWidgetRow.h>
 #include <IDetailChildrenBuilder.h>
 #include <Editor.h>
-#include <AssetEditorSubsystem.h>
+#include <Subsystems/AssetEditorSubsystem.h>
 #include "XD_AssetFunctionLibrary.h"
 
 #define LOCTEXT_NAMESPACE "XD_PropertyCustomizationEx"
