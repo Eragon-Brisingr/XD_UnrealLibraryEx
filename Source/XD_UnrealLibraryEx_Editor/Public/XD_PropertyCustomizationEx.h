@@ -28,6 +28,7 @@ struct IPropertyTypeCustomizationMakeInstanceable : public IPropertyTypeCustomiz
 };
 
 #define RegisterCustomProperty(TargetType, CustomizationType) PropertyModule.RegisterCustomPropertyTypeLayout(GET_TYPE_NAME_CHECKED(TargetType), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&CustomizationType::MakeInstance))
+#define UnregisterCustomProperty(TargetType) PropertyModule.UnregisterCustomPropertyTypeLayout(GET_TYPE_NAME_CHECKED(TargetType))
 
 struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 {
