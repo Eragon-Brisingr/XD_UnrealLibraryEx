@@ -33,7 +33,7 @@ UObject* FPropertyCustomizeHelper::GetOuter(const TSharedRef<IPropertyHandle>& P
 {
 	TArray<UObject*> Outers;
 	PropertyHandle->GetOuterObjects(Outers);
-	return Outers[0];
+	return Outers.Num() > 0 ? Outers[0] : nullptr;
 }
 
 bool FPropertyCustomizeHelper::IsInArray(const TSharedRef<IPropertyHandle>& PropertyHandle)
