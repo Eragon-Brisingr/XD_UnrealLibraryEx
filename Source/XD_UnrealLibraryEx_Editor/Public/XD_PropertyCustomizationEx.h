@@ -40,7 +40,7 @@ struct XD_UNREALLIBRARYEX_EDITOR_API FPropertyCustomizeHelper
 
 	static bool IsInArray(const TSharedRef<IPropertyHandle>& PropertyHandle);
 
-	static void StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames = {});
+	static void StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames = {}, UStruct* StopShowType = nullptr);
 
 	static TSharedPtr<IPropertyHandle> GetPropertyHandleByName(TSharedRef<class IPropertyHandle> StructPropertyHandle, FName ChildPropertyName);
 

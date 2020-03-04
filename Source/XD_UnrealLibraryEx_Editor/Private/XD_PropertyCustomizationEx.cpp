@@ -41,15 +41,20 @@ bool FPropertyCustomizeHelper::IsInArray(const TSharedRef<IPropertyHandle>& Prop
 	return PropertyHandle->GetIndexInArray() != INDEX_NONE;
 }
 
-void FPropertyCustomizeHelper::StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames)
+void FPropertyCustomizeHelper::StructBuilderDrawPropertys(class IDetailChildrenBuilder& StructBuilder, const TSharedRef<IPropertyHandle>& PropertyHandle, const TArray<FName>& ExcludePropertyNames, UStruct* StopShowType)
 {
 	for (uint32 ChildIndex = 0; ChildIndex < GetNumChildren(PropertyHandle); ++ChildIndex)
 	{
 		const TSharedRef<IPropertyHandle> ChildHandle = PropertyHandle->GetChildHandle(ChildIndex).ToSharedRef();
 
-		if (!ExcludePropertyNames.Contains(*ChildHandle->GetProperty()->GetNameCPP()))
+		UProperty* ChildProperty = ChildHandle->GetProperty();
+		UStruct* OwnerStrcut = ChildProperty->GetOwnerStruct();
+		if (StopShowType == nullptr || !OwnerStrcut->IsChildOf(StopShowType))
 		{
-			StructBuilder.AddProperty(ChildHandle);
+			if (!ExcludePropertyNames.Contains(*ChildProperty->GetNameCPP()))
+			{
+				StructBuilder.AddProperty(ChildHandle);
+			}
 		}
 	}
 }
