@@ -125,7 +125,7 @@ int32 UXD_BlueprintFunctionLibrary::Find(UPARAM(Ref)TArray<UObject*>& Array, con
 	return Index;
 }
 
-void UXD_BlueprintFunctionLibrary::Generic_SortStructArray_UserDefined(void* TargetArray, const UArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName)
+void UXD_BlueprintFunctionLibrary::Generic_SortStructArray_UserDefined(void* TargetArray, const FArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName)
 {
 	if (!OwnerObject)
 	{
@@ -144,7 +144,7 @@ void UXD_BlueprintFunctionLibrary::Generic_SortStructArray_UserDefined(void* Tar
 		UnrealLibraryEx_Error_Log("[%s]中没找到排序函数[%s]", *OwnerObject->GetName(), *FunctionName.ToString());
 		return;
 	}
-	UBoolProperty* ReturnParam = Cast<UBoolProperty>(SortRuleFunc->GetReturnProperty());
+	FBoolProperty* ReturnParam = CastField<FBoolProperty>(SortRuleFunc->GetReturnProperty());
 	if (!ReturnParam)
 	{
 		UnrealLibraryEx_Error_Log("[%s]中排序函数[%s]类型不为bool", *OwnerObject->GetName(), *FunctionName.ToString());
@@ -153,7 +153,7 @@ void UXD_BlueprintFunctionLibrary::Generic_SortStructArray_UserDefined(void* Tar
 	//begin Sort Array
 	{
 		FScriptArrayHelper ArrayHelper(ArrayProp, TargetArray);
-		UProperty* InnerProp = ArrayProp->Inner;
+		FProperty* InnerProp = ArrayProp->Inner;
 		const int32 Len = ArrayHelper.Num();
 		const int32 PropertySize = InnerProp->ElementSize * InnerProp->ArrayDim;
 		uint8* Parameters = (uint8*)FMemory::Malloc(PropertySize * 2 + 1);
@@ -176,7 +176,7 @@ void UXD_BlueprintFunctionLibrary::Generic_SortStructArray_UserDefined(void* Tar
 	//end Sort Array
 }
 
-void Generic_FindStructArray_UserDefined(void* TargetArray, const UArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName, int32& FindElement, bool& Result)
+void Generic_FindStructArray_UserDefined(void* TargetArray, const FArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName, int32& FindElement, bool& Result)
 {
 
 }

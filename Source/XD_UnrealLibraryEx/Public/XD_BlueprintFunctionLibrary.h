@@ -106,22 +106,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "游戏|工具|数组")
 	static int32 Find(UPARAM(Ref)TArray<UObject*>& Array, const FFindFunction& FindFunction);
 
-	static void Generic_SortStructArray_UserDefined(void* TargetArray, const UArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName);
+	static void Generic_SortStructArray_UserDefined(void* TargetArray, const FArrayProperty* ArrayProp, UObject* OwnerObject, FName FunctionName);
 	UFUNCTION(BlueprintCallable, CustomThunk, meta = (DisplayName = "SortArray_ByFunctionName", DefaultToSelf = "FunctionFromObject", ArrayParm = "CustomStruct"), Category = "工具|数组")
 	static void SortStructArray_UserDefined(const TArray<int32>& CustomStruct, UObject* FunctionFromObject, FName FunctionName);
 	DECLARE_FUNCTION(execSortStructArray_UserDefined)
 	{
 		Stack.MostRecentProperty = nullptr;
-		Stack.StepCompiledIn<UArrayProperty>(NULL);
+		Stack.StepCompiledIn<FArrayProperty>(NULL);
 		void* ArrayAddr = Stack.MostRecentPropertyAddress;
-		UArrayProperty* ArrayProperty = Cast<UArrayProperty>(Stack.MostRecentProperty);
+		FArrayProperty* ArrayProperty = CastField<FArrayProperty>(Stack.MostRecentProperty);
 		if (!ArrayProperty)
 		{
 			Stack.bArrayContextFailed = true;
 			return;
 		}
 		P_GET_OBJECT(UObject, FunctionFromObject);
-		P_GET_PROPERTY(UNameProperty, FunctionName);
+		P_GET_PROPERTY(FNameProperty, FunctionName);
 		P_FINISH;
 		P_NATIVE_BEGIN;
 		Generic_SortStructArray_UserDefined(ArrayAddr, ArrayProperty, FunctionFromObject, FunctionName);

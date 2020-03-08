@@ -72,9 +72,9 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 
 	FString ReturnDesc;
 	FString PropertyDesc;
-	for (UProperty* TestProperty = Object->GetClass()->PropertyLink; TestProperty; TestProperty = TestProperty->PropertyLinkNext)
+	for (FProperty* TestProperty = Object->GetClass()->PropertyLink; TestProperty; TestProperty = TestProperty->PropertyLinkNext)
 	{
-		if (TestProperty->GetOuter() == StopAtClass)
+		if (TestProperty->GetOwnerClass() == StopAtClass)
 		{
 			break;
 		}
@@ -91,13 +91,13 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 
 			FString ExportedStringValue;
 
-			if (const UFloatProperty* FloatProp = Cast<const UFloatProperty>(TestProperty))
+			if (const FFloatProperty* FloatProp = CastField<const FFloatProperty>(TestProperty))
 			{
 				const float FloatValue = FloatProp->GetPropertyValue(PropertyAddr);
 				ExportedStringValue = FString::SanitizeFloat(FloatValue);
 			}
 			//软引用只用引用的对象名
-			else if (const USoftObjectProperty* SoftObjectProp = Cast<const USoftObjectProperty>(TestProperty))
+			else if (const FSoftObjectProperty* SoftObjectProp = CastField<const FSoftObjectProperty>(TestProperty))
 			{
 				FSoftObjectPtr SoftObjectPtr = SoftObjectProp->GetPropertyValue(PropertyAddr);
 				if (!SoftObjectPtr.IsNull())
@@ -109,7 +109,7 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 					ExportedStringValue = TEXT("None");
 				}
 			}
-			else if (const UClassProperty* ClassProperty = Cast<const UClassProperty>(TestProperty))
+			else if (const FClassProperty* ClassProperty = CastField<const FClassProperty>(TestProperty))
 			{
 				UClass* Class = Cast<UClass>(ClassProperty->GetPropertyValue(PropertyAddr));
 				ExportedStringValue = GetClassName(Class);
@@ -119,7 +119,7 @@ FString UXD_ObjectFunctionLibrary::GetObjectPropertysDesc(const UObject* Object,
 				TestProperty->ExportTextItem(ExportedStringValue, PropertyAddr, NULL, NULL, PPF_PropertyWindow, NULL);
 			}
 
-			const bool bIsBool = TestProperty->IsA(UBoolProperty::StaticClass());
+			const bool bIsBool = TestProperty->IsA(FBoolProperty::StaticClass());
 #if WITH_EDITOR
 			FString PropertyName = TestProperty->GetDisplayNameText().ToString();
 #else
@@ -239,7 +239,7 @@ TArray<UClass*> UXD_ObjectFunctionLibrary::GetAllSubclassImpl(UClass* Class, ECl
   			if (CheckParentHelper.IsParent(NameAndData.Key))
   			{
   				FString PathName = NameAndData.Value.PackageName.ToString();
-  				if (UBlueprint* LoadedBlueprint = ConstructorHelpersInternal::FindOrLoadObject<UBlueprint>(PathName))
+  				if (UBlueprint* LoadedBlueprint = ConstructorHelpersInternal::FindOrLoadObject<UBlueprint>(PathName, ELoadFlags::LOAD_None))
   				{
 					UClass* DerivedClass = LoadedBlueprint->GeneratedClass;
 					if (DerivedClass->HasAnyClassFlags(ExcludeFlags))
@@ -263,7 +263,7 @@ bool UXD_ObjectFunctionLibrary::CompareObject(const UObject* A, const UObject* B
 {
 	struct CompareObjectHelper
 	{
-		static bool ShouldCompareProperty(const UProperty* Property)
+		static bool ShouldCompareProperty(const FProperty* Property)
 		{
 			// Ignore components & transient properties
 			const bool bIsTransient = !!(Property->PropertyFlags & CPF_Transient);
@@ -280,18 +280,18 @@ bool UXD_ObjectFunctionLibrary::CompareObject(const UObject* A, const UObject* B
 		if (A == B)
 			return true;
 
-		for (TFieldIterator<UProperty> PropIt(A->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
+		for (TFieldIterator<FProperty> PropIt(A->GetClass(), EFieldIteratorFlags::IncludeSuper); PropIt; ++PropIt)
 		{
-			if (PropIt->GetOuter() == StopAtClass->GetSuperClass())
+			if (PropIt->GetOwnerClass() == StopAtClass->GetSuperClass())
 			{
 				break;
 			}
 
-			UProperty* Prop = *PropIt;
+			FProperty* Prop = *PropIt;
 
 			if (CompareObjectHelper::ShouldCompareProperty(Prop))
 			{
-				if (UObjectProperty* ObjectProperty = Cast<UObjectProperty>(Prop))
+				if (FObjectProperty* ObjectProperty = CastField<FObjectProperty>(Prop))
 				{
 					const UObject* A_ContainObject = ObjectProperty->GetObjectPropertyValue(ObjectProperty->ContainerPtrToValuePtr<void>(A));
 					const UObject* B_ContainObject = ObjectProperty->GetObjectPropertyValue(ObjectProperty->ContainerPtrToValuePtr<void>(B));

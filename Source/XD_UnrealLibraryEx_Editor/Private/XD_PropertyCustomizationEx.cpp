@@ -47,7 +47,7 @@ void FPropertyCustomizeHelper::StructBuilderDrawPropertys(class IDetailChildrenB
 	{
 		const TSharedRef<IPropertyHandle> ChildHandle = PropertyHandle->GetChildHandle(ChildIndex).ToSharedRef();
 
-		UProperty* ChildProperty = ChildHandle->GetProperty();
+		FProperty* ChildProperty = ChildHandle->GetProperty();
 		UStruct* OwnerStrcut = ChildProperty->GetOwnerStruct();
 		if (StopShowType == nullptr || !OwnerStrcut->IsChildOf(StopShowType))
 		{
